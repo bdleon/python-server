@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from animals import get_all_animals
+from employees.request import get_all_employees
 
 
 # Here's a class. It inherits from another class.
@@ -52,6 +53,12 @@ class HandleRequests(BaseHTTPRequestHandler):
         # It's an if..else statement
         if self.path == "/animals":
             response = get_all_animals()
+
+        else:
+            response = []
+
+        if self.path == "/employees":
+            response = get_all_employees()
 
         else:
             response = []
