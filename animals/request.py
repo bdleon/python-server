@@ -76,3 +76,10 @@ def delete_animal(id):
     # If the animal was found, use pop(int) to remove it from list
     if animal_index >= 0:
         ANIMALS.pop(animal_index)
+
+def update_animal(id, new_animal):
+
+    for index , animal in enumerate(ANIMALS):
+        if animal["id"] == id:
+            ANIMALS[index] = new_animal
+            break
