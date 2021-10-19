@@ -1,3 +1,7 @@
+import sqlite3
+import json
+from models import Customer
+
 CUSTOMERS = [
     {
         "id": 1,
@@ -16,9 +20,50 @@ CUSTOMERS = [
     }
 ]
 
-
 def get_all_customers():
-    return CUSTOMERS
+    # Open a connection to the database
+    with sqlite3.connect("./kennel.db") as conn:
+
+        # Just use these. It's a Black Box.
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM customer c
+        """)
+
+        # Initialize an empty list to hold all customer representations
+        customers = []
+
+        # Convert rows of data into a Python list
+        dataset = db_cursor.fetchall()
+
+        # Iterate list of data returned from database
+        for row in dataset:
+
+            # Create an animal instance from the current row.
+            # Note that the database fields are specified in
+            # exact order of the parameters defined in the
+            # Animal class above.
+            customer = Customer(row['id'], row['name'], row['address'],
+                                row['email'], row['password'])
+
+            customers.append(customer.__dict__)
+
+    # Use `json` package to properly serialize list as JSON
+    return json.dumps(customers)
+
+
+#------ old code for getting all customers-----
+#def get_all_customers():
+ #   return CUSTOMERS
 
 # Function with a single parameter
 
