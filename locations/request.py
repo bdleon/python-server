@@ -1,11 +1,13 @@
 LOCATIONS = [
     {
         "id": 1,
-        "name": "Nashville North"
+        "name": "Nashville North",
+        "address": "59189 Block Pike"
     },
     {
         "id": 2,
-        "name": "Nashville South"
+        "name": "Nashville South",
+        "address": "McLaughlin Alley"
     }
 ]
 
@@ -42,6 +44,7 @@ def create_location(location):
     # Return the dictionary with `id` property added
     return location
 
+
 def delete_location(id):
     # Initial -1 value for animal index, in case one isn't found
     location_index = -1
@@ -56,6 +59,7 @@ def delete_location(id):
     # If the animal was found, use pop(int) to remove it from list
     if location_index >= 0:
         LOCATIONS.pop(location_index)
+
 
 def update_location(id, new_location):
     # Iterate the ANIMALS list, but use enumerate() so that
