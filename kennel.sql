@@ -67,3 +67,20 @@ SELECT
     a.customer_id
 FROM animal a
 WHERE a.id = 3
+
+SELECT
+    c.id,
+    c.name,
+    c.address,
+    c.email,
+    c.password
+FROM customer c
+WHERE c.id = 3
+
+SELECT
+    e.id,
+    e.name,
+    e.address,
+    e.location_id
+FROM employee e
+WHERE e.id = 3
