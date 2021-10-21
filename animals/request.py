@@ -3,8 +3,6 @@ import json
 from models import Animal
 
 
-
-
 ANIMALS = [
     {
         "id": 1,
@@ -12,7 +10,7 @@ ANIMALS = [
         "species": "Dog",
         "location_id": 1,
         "customer_id": 4,
-        "status":"Admitted"
+        "status": "Admitted"
     },
     {
         "id": 2,
@@ -20,7 +18,7 @@ ANIMALS = [
         "species": "Dog",
         "location_id": 1,
         "customer_id": 2,
-        "status":"Admitted"
+        "status": "Admitted"
     },
     {
         "id": 3,
@@ -28,9 +26,10 @@ ANIMALS = [
         "species": "Cat",
         "location_id": 2,
         "customer_id": 1,
-        "status":"Admitted"
+        "status": "Admitted"
     }
 ]
+
 
 def get_all_animals():
     # Open a connection to the database
@@ -93,20 +92,20 @@ def get_single_animal(id):
             a.customer_id
         FROM animal a
         WHERE a.id = ?
-        """, ( id, ))
+        """, (id, ))
 
         # Load the single result into memory
         data = db_cursor.fetchone()
 
         # Create an animal instance from the current row
         animal = Animal(data['id'], data['name'], data['breed'],
-                            data['status'], data['location_id'],
-                            data['customer_id'])
+                        data['status'], data['location_id'],
+                        data['customer_id'])
 
         return json.dumps(animal.__dict__)
 
 
-#--------Code below is to appending to the animal list-----------
+# --------Code below is to appending to the animal list-----------
 
 def create_animal(animal):
     # Get the id value of the last animal in the list
@@ -124,7 +123,7 @@ def create_animal(animal):
     # Return the dictionary with `id` property added
     return animal
 
-    
+
 def delete_animal(id):
     with sqlite3.connect("./kennel.db") as conn:
         db_cursor = conn.cursor()
@@ -135,13 +134,35 @@ def delete_animal(id):
         """, (id, ))
 
 
-
 def update_animal(id, new_animal):
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
 
-    for index , animal in enumerate(ANIMALS):
-        if animal["id"] == id:
-            ANIMALS[index] = new_animal
-            break
+        db_cursor.execute("""
+        UPDATE Animal
+            SET
+                name = ?,
+                breed = ?,
+                status = ?,
+                location_id = ?,
+                customer_id = ?
+        WHERE id = ?
+        """, (new_animal['name'], new_animal['breed'],
+              new_animal['status'], new_animal['location_id'],
+              new_animal['customer_id'], id, ))
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True
+
+
 
 def get_animals_by_location_id(location_id):
 
@@ -160,17 +181,18 @@ def get_animals_by_location_id(location_id):
             a.customer_id
         from Animal a
         WHERE a.location_id = ?
-        """, ( location_id, ))
+        """, (location_id, ))
 
         animals = []
         dataset = db_cursor.fetchall()
 
         for row in dataset:
-            animal = Animal(row['id'], row['name'], row['breed'], row['status'] , row['location_id'],
-            row["customer_id"])
+            animal = Animal(row['id'], row['name'], row['breed'], row['status'], row['location_id'],
+                            row["customer_id"])
             animals.append(animal.__dict__)
 
     return json.dumps(animals)
+
 
 def get_animals_by_status(status):
 
@@ -189,14 +211,14 @@ def get_animals_by_status(status):
             a.customer_id
         from Animal a
         WHERE a.status = ?
-        """, ( status, ))
+        """, (status, ))
 
         animals = []
         dataset = db_cursor.fetchall()
 
         for row in dataset:
-            animal = Animal(row['id'], row['name'], row['breed'], row['status'] , row['location_id'],
-            row["customer_id"])
+            animal = Animal(row['id'], row['name'], row['breed'], row['status'], row['location_id'],
+                            row["customer_id"])
             animals.append(animal.__dict__)
 
     return json.dumps(animals)
