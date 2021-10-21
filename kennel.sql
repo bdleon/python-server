@@ -127,4 +127,6 @@ select c.id,
     c.email,
     c.password
 from Customer c
-WHERE c.email =
+WHERE c.email ="mo@silvera.com"
+
+INSERT INTO `Animal` VALUES (null, "Daps", "Kennel", "Boxer", 2, 2);
